@@ -17,6 +17,17 @@
     "ios": {
       "supportsTablet": true
     },
+    "plugins": [
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "Allow restoramba to use your location."
+        }
+      ],
+      ["expo-font",{
+        "fonts":["./assets/Inter-Regular.ttf"]
+      }]
+    ],
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
