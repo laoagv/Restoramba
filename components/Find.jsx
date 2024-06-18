@@ -123,6 +123,21 @@ export const Find = ({route, navigation}) => {
         marginTop:30,
     }
   })
+
+    renderMenuButton = () =>{
+        if (item=="ресторан"){
+            if (randomItem["dishes"].length==0){
+                return <Pressable style={styles.button} >
+                <Text style={styles.button_text} >Меню отсутствует</Text>
+            </Pressable>
+            }
+            return  <Pressable style={styles.button} >
+                        <Text style={styles.button_text} onPress={()=>navigation.navigate("Search", {item:"блюдо", curRestaurent:randomItem})}>Найти блюдо</Text>
+                    </Pressable>}
+        return  <Pressable style={styles.button} onPress={()=>navigation.navigate("Search", {item:"ресторан"})}>
+                    <Text style={styles.button_text}>Выбрать другой ресторан</Text>
+                </Pressable>
+    }
     renderItem = () => {
         if (item=="ресторан"){
             return     <View style={styles.flex_container_find}>
@@ -135,9 +150,7 @@ export const Find = ({route, navigation}) => {
             </View>
             <View style={styles.container_flex_button}>
                 <View style={styles.button_wrapper}>
-                    <Pressable style={styles.button} >
-                        <Text style={styles.button_text} onPress={()=>navigation.navigate("Search", {item:"блюдо", curRestaurent:randomItem})}>Найти блюдо</Text>
-                    </Pressable>
+                    {this.renderMenuButton()}
                 </View>
                 <View style={styles.button_wrapper}>
                     <Pressable style={styles.button} >

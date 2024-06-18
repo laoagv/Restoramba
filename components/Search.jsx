@@ -24,19 +24,15 @@ export const Search = ({route, navigation}) => {
        // shirota:curLocation['coords']["latitude"],
           // dolgota:curLocation["coords"]["longitude"]
     const getRestaurents = async () =>{
-      await setCurLocation(await Location.getCurrentPositionAsync())
-      // let longitude = String(curLocation["coords"]["longitude"])
-      // let latitude = String(curLocation['coords']["latitude"])
-      // console.log(longitude)
+      let longitude = await String(curLocation["coords"]["longitude"])
+      let latitude = await String(curLocation['coords']["latitude"])
       // console.log(latitude)
-
-      const response = await fetch("https://94f9-5-141-224-24.ngrok-free.app/api/v1/restParse",{
+      const geodata = await {shirota:latitude, dolgota:longitude} 
+      console.log(await geodata)
+      const response = await fetch("https://e746-5-141-224-24.ngrok-free.app/api/v1/restParse",{
         method:"POST",
         headers: { 'Content-Type': 'application/json' },
-        body:JSON.stringify({
-          shirota:"56.80674809661698",
-          dolgota:"60.62057404143074"
-        }),
+        body:JSON.stringify(geodata),
         redirect: "follow"
       })
       const json = await response.json()
@@ -87,8 +83,17 @@ export const Search = ({route, navigation}) => {
         navigation.navigate("Find", {randomItem:randomItem, item:item})}
     }
     useEffect(()=>{
+        (async () => {
+          let { status } = await Location.requestForegroundPermissionsAsync();
+          if (status !== 'granted') {
+            setErrorMsg('Permission to access location was denied');
+            return;
+          }
+          let location = await Location.getCurrentPositionAsync({});
+          setCurLocation(location);
+        })();
+        
         const subsciption = Accelerometer.addListener(setData);
-        getRestaurents()
         return ()=> subsciption.remove();
     },[]);
     useEffect(()=>{
@@ -101,11 +106,17 @@ export const Search = ({route, navigation}) => {
     useEffect(()=>{
       if (shakes>=3){
         if (restaurents.length==0){
+          (async () => {
+            await Location.requestForegroundPermissionsAsync();
+            let location = await Location.getCurrentPositionAsync({});
+            setCurLocation(location);
+            if (isLoading==false){
+            getRestaurents()}
+          })()
           setIsLoading(true)
         }
         else {getRandomItem()}
       }
-
     },[shakes])
     const styles = StyleSheet.create({
     container: {
